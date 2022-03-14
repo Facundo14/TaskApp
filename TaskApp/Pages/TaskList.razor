@@ -1,0 +1,77 @@
+﻿@page "/taskList"
+
+<h3>TaskList @Name </h3>
+
+@if (taskList.Count > 0)
+{
+    <div class="progress my-2">
+        <div class="progress-bar" role="progressbar" style="width: @(percentDone)%" aria-valuemin="0" aria-valuemax="100">
+            @(percentDone)%
+        </div>
+    </div>
+}
+
+<EditForm Model="@newTask" OnValidSubmit="AddTask" class="row g-3 my-2">
+    <div class="col-auto">
+        <InputText @bind-Value="newTask.Task" class="form-control" />
+    </div>
+    <div class="col-auto">
+        <button class="btn btn-outline-primary form-control" type="submit">Agregar task</button>
+    </div>
+</EditForm>
+<div class="row g-1">
+    <ul class="list-group" >
+        @foreach (var task in taskList)
+        {
+            @if (task.IsComplete)
+            {
+                <li class="list-group-item list-group-item-secondary my-1 animate__animated animate__fadeIn"
+                    @onclick="() => CompleteTask(task)">
+                    <del>@task.Task</del>
+                </li>
+            }
+            else
+            {
+                <li class="list-group-item list-group-item-success my-1 animate__animated animate__fadeIn"
+                    @onclick="() => CompleteTask(task)">
+                    @task.Task
+                </li>
+            }
+        }
+    </ul>
+</div>
+
+@code {
+    private List<TaskModel> taskList = new List<TaskModel>();
+
+    private TaskModel newTask = new TaskModel();
+
+    [Parameter]
+    public string? Name { get; set; }
+
+    private int percentDone
+    {
+        get
+        {
+            return (taskList.Count(x => x.IsComplete) * 100 / taskList.Count);
+        }
+    }
+
+    private void AddTask()
+    {
+        if (newTask.Task!.Length > 0)
+        {
+            taskList.Add(newTask);
+            newTask = new TaskModel();
+        }
+        else
+        {
+            Console.WriteLine("Escribe algo");
+        }
+    }
+
+    private void CompleteTask(TaskModel task)
+    {
+        task.IsComplete = !task.IsComplete;
+    }
+}

@@ -1,0 +1,193 @@
+﻿@page "/calculator"
+@inject IJSRuntime JSRuntime
+
+<PageTitle>Calculator</PageTitle>
+<div class="container my-4">  
+
+    <div class="row text-center">
+        <div class="col-lg-4"></div>
+        <div class="col-lg-3">
+            <div class="card">
+                <div class="card-header">
+                    <div class="col-lg-12 col-md-12">
+                        <input type="text" class="form-control text-end" value=@textoValor disabled />
+                    </div>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-lg-3 col-md-3">
+                            <button class="btn btn-dark mt-1">%</button>
+                        </div>
+                        <div class="col-lg-3 col-md-3">
+                            <button class="btn btn-dark mt-1" @onclick="Reset">CE</button>
+                        </div>
+                        <div class="col-lg-3 col-md-3">
+                            <button class="btn btn-dark mt-1" @onclick="LastDelete">C</button>
+                        </div>
+                        <div class="col-lg-3 col-md-3">
+                            <button class="btn btn-dark mt-1" @onclick='() => AgregarOperacion("-")'>-</button>
+                        </div>
+                    </div>
+                     <div class="row">
+                        <div class="col-lg-3 col-md-3">
+                            <button class="btn btn-dark mt-1">1/x</button>
+                        </div>
+                        <div class="col-lg-3 col-md-3 text-center">
+                            <button class="btn btn-dark mt-1">X²</button>
+                        </div>
+                        <div class="col-lg-3 col-md-3">
+                            <button class="btn btn-dark mt-1">R</button>
+                        </div>
+                        <div class="col-lg-3 col-md-3">
+                            <button class="btn btn-dark mt-1" @onclick='() => AgregarOperacion("/")'>/</button>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-lg-3 col-md-3">
+                            <button class="btn btn-dark mt-1" @onclick='() => AgregarNumero("7")'>7</button>
+                        </div>
+                        <div class="col-lg-3 col-md-3">
+                            <button class="btn btn-dark mt-1" @onclick='() => AgregarNumero("8")'>8</button>
+                        </div>
+                        <div class="col-lg-3 col-md-3">
+                            <button class="btn btn-dark mt-1" @onclick='() => AgregarNumero("9")'>9</button>
+                        </div>
+                        <div class="col-lg-3 col-md-3">
+                            <button class="btn btn-dark mt-1" @onclick='() => AgregarOperacion("*")'>X</button>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-lg-3 col-md-3">
+                            <button class="btn btn-dark mt-1" @onclick='() => AgregarNumero("4")'>4</button>
+                        </div>
+                        <div class="col-lg-3 col-md-3">
+                            <button class="btn btn-dark mt-1" @onclick='() => AgregarNumero("5")'>5</button>
+                        </div>
+                        <div class="col-lg-3 col-md-3">
+                            <button class="btn btn-dark mt-1" @onclick='() => AgregarNumero("6")'>6</button>
+                        </div>
+                        <div class="col-lg-3 col-md-3">
+                            <button class="btn btn-dark mt-1">-</button>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-lg-3 col-md-3">
+                            <button class="btn btn-dark mt-1" @onclick='() => AgregarNumero("1")'>1</button>
+                        </div>
+                        <div class="col-lg-3 col-md-3">
+                            <button class="btn btn-dark mt-1" @onclick='() => AgregarNumero("2")'>2</button>
+                        </div>
+                        <div class="col-lg-3 col-md-3">
+                            <button class="btn btn-dark mt-1" @onclick='() => AgregarNumero("3")'>3</button>
+                        </div>
+                        <div class="col-lg-3 col-md-3">
+                            <button class="btn btn-dark mt-1" @onclick='() => AgregarOperacion("+")'>+</button>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-lg-3 col-md-3">
+                            <button class="btn btn-dark mt-1">+/-</button>
+                        </div>
+                        <div class="col-lg-3 col-md-3">
+                            <button class="btn btn-dark mt-1" @onclick='() => AgregarNumero("0")'>0</button>
+                        </div>
+                        <div class="col-lg-3 col-md-3">
+                            <button class="btn btn-dark mt-1">,</button>
+                        </div>
+                        <div class="col-lg-3 col-md-3">
+                            <button class="btn btn-info mt-1" @onclick=ResultOperation>=</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+        </div>
+        <div class="col-lg-4"></div>
+     </div>
+ </div>
+
+
+@code {
+    public double numero1 { get; set; }
+    public double numero2 { get; set; }
+    public double result { get; set; }
+    public string? operation { get; set; }
+    public string? textoValor { get; set; }
+
+
+    public void AgregarNumero(String valor)
+    {
+        textoValor = textoValor + valor;
+    }
+
+    public async void AgregarOperacion(string operacion)
+    {
+        if (textoValor != "")
+        {
+            numero1 = Convert.ToDouble(textoValor!);
+            textoValor = "";
+            operation = operacion;
+            await JSRuntime.InvokeVoidAsync("console.log", "Operacion: ", operation);
+            await JSRuntime.InvokeVoidAsync("console.log", "Numero 1: ", numero1);
+            await JSRuntime.InvokeVoidAsync("console.log", "Valor caja: ",textoValor);
+        }
+    }
+
+    public void Reset()
+    {
+        textoValor = "";
+        numero1 = 0;
+        numero2 = 0;
+        operation = "";
+    }
+
+    public void LastDelete()
+    {
+        if(textoValor!.Length > 0)
+        {
+            textoValor = textoValor!.Remove(textoValor.Length - 1);
+        }
+    }
+
+    public void ResultOperation()
+    {
+        if (numero1 > 0 && textoValor != "")
+        {
+            numero2 = Convert.ToDouble(textoValor!);
+
+            if(operation != "")
+            {
+                switch(operation)
+                {
+                    case "-":
+                        result = numero1 - numero2;
+                        textoValor = result.ToString();
+                        break;
+
+                    case "+":
+                        result = numero1 + numero2;
+                        textoValor = result.ToString();
+                        break;
+
+                    case "*":
+                        result = numero1 * numero2;
+                        textoValor = result.ToString();
+                        break;
+
+                    case "/":
+                        result = numero1 / numero2;
+                        textoValor = result.ToString();
+                        break;
+
+                    default:
+                        textoValor = result.ToString();
+                        break;
+                }
+            }
+        }
+        else
+        {
+            return;
+        }
+    }
+}
