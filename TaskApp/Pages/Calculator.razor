@@ -33,7 +33,7 @@
                             <button class="btn btn-dark mt-1">1/x</button>
                         </div>
                         <div class="col-lg-3 col-md-3 text-center">
-                            <button class="btn btn-dark mt-1">X²</button>
+                            <button class="btn btn-dark mt-1" @onclick="ElevadoCuadrado">X²</button>
                         </div>
                         <div class="col-lg-3 col-md-3">
                             <button class="btn btn-dark mt-1">R</button>
@@ -133,6 +133,15 @@
         }
     }
 
+    public void ElevadoCuadrado()
+    {
+        numero1 = Convert.ToDouble(textoValor!);
+        result = numero1 * numero1;
+        textoValor = result.ToString();
+        numero1 = 0;
+        numero2 = 0;
+    }
+
     public void Reset()
     {
         textoValor = "";
@@ -176,6 +185,11 @@
 
                     case "/":
                         result = numero1 / numero2;
+                        textoValor = result.ToString();
+                        break;
+
+                    case "X²":
+                        result =  numero1 * numero1;
                         textoValor = result.ToString();
                         break;
 
